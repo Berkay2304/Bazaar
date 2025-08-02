@@ -16,9 +16,26 @@ if (!process.env.MONGO_URI) {
   process.exit(1);
 }
 
-// CORS ayarlarını düzelt
+// CORS ayarlarını geçici olarak daha esnek hale getir
+const allowedOrigins = [
+  'https://bazaar-tau.vercel.app',
+  'https://bazaar-app-frontend.vercel.app',
+  'http://localhost:5173',
+  'http://localhost:3000'
+];
+
 app.use(cors({
-  origin: process.env.FRONTEND_URL || 'https://bazaar-app-frontend.vercel.app',
+  origin: function (origin, callback) {
+    // Allow requests with no origin (like mobile apps or curl requests)
+    if (!origin) return callback(null, true);
+    
+    if (allowedOrigins.indexOf(origin) !== -1) {
+      callback(null, true);
+    } else {
+      console.log('CORS blocked origin:', origin);
+      callback(new Error('Not allowed by CORS'));
+    }
+  },
   credentials: true,
   methods: ['GET', 'POST', 'PUT', 'DELETE', 'OPTIONS'],
   allowedHeaders: ['Content-Type', 'Authorization']
@@ -54,5 +71,5 @@ app.get('/', (req, res) => {
 
 app.listen(PORT, () => {
   console.log(`Server running on port ${PORT}`);
-  console.log(`Frontend URL: ${process.env.FRONTEND_URL || 'https://bazaar-app-frontend.vercel.app'}`);
+  console.log('Allowed origins:', allowedOrigins);
 });
