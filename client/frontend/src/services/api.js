@@ -1,6 +1,6 @@
 import axios from 'axios';
 
-const API_BASE_URL = 'https://bazaar-dcum.onrender.com';
+const API_BASE_URL = 'https://bazaar-dcum.onrender.com/api';
 
 // Axios instance oluştur
 const api = axios.create({
