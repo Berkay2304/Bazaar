@@ -2,57 +2,15 @@
 const express = require("express");
 const cors = require('cors'); 
 const app = express();
+app.use(cors());
+const PORT = process.env.PORT || 5000;
 const dotenv = require('dotenv');
 dotenv.config();
-
-// Environment variables kontrolü
-if (!process.env.JWT_SECRET) {
-  console.error('JWT_SECRET environment variable is not defined');
-  process.exit(1);
-}
-
-if (!process.env.MONGO_URI) {
-  console.error('MONGO_URI environment variable is not defined');
-  process.exit(1);
-}
-
-// CORS ayarlarını geçici olarak daha esnek hale getir
-const allowedOrigins = [
-  'https://bazaar-tau.vercel.app',
-  'https://bazaar-app-frontend.vercel.app',
-  'http://localhost:5173',
-  'http://localhost:3000'
-];
-
-app.use(cors({
-  origin: function (origin, callback) {
-    // Allow requests with no origin (like mobile apps or curl requests)
-    if (!origin) return callback(null, true);
-    
-    if (allowedOrigins.indexOf(origin) !== -1) {
-      callback(null, true);
-    } else {
-      console.log('CORS blocked origin:', origin);
-      callback(new Error('Not allowed by CORS'));
-    }
-  },
-  credentials: true,
-  methods: ['GET', 'POST', 'PUT', 'DELETE', 'OPTIONS'],
-  allowedHeaders: ['Content-Type', 'Authorization']
-}));
-
-const PORT = process.env.PORT || 5000;
 
 const connectDB = require('./config/db');
 connectDB();
 
 app.use(express.json());
-
-// Health check endpoint
-app.get('/health', (req, res) => {
-  res.json({ status: 'OK', message: 'Server is running' });
-});
-
 const userRoutes = require('./routes/userRoutes');
 app.use('/api/users', userRoutes);
 
@@ -71,5 +29,4 @@ app.get('/', (req, res) => {
 
 app.listen(PORT, () => {
   console.log(`Server running on port ${PORT}`);
-  console.log('Allowed origins:', allowedOrigins);
 });
