@@ -12,6 +12,7 @@ import Orders from './pages/Orders';
 import Admin from './pages/Admin';
 import AdminProducts from './pages/AdminProducts';
 import AdminOrders from './pages/AdminOrders';
+import Test from './pages/Test';
 import './App.css';
 
 function App() {
@@ -33,6 +34,7 @@ function App() {
               <Route path="/admin" element={<Admin />} />
               <Route path="/admin/products" element={<AdminProducts />} />
               <Route path="/admin/orders" element={<AdminOrders />} />
+              <Route path="/test" element={<Test />} />
             </Routes>
           </main>
         </div>
